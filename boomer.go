@@ -39,6 +39,7 @@ type Boomer struct {
 	localRunner *localRunner
 	hatchCount  int
 	hatchRate   float64
+	host        string
 
 	cpuProfile         string
 	cpuProfileDuration time.Duration
@@ -203,7 +204,7 @@ func (b *Boomer) Quit() {
 }
 
 // Run tasks without connecting to the master.
-func runTasksForTest(tasks ...*Task) {
+func runTasksForTest(host string, tasks ...*Task) {
 	taskNames := strings.Split(runTasks, ",")
 	for _, task := range tasks {
 		if task.Name == "" {
@@ -212,7 +213,7 @@ func runTasksForTest(tasks ...*Task) {
 			for _, name := range taskNames {
 				if name == task.Name {
 					log.Println("Running " + task.Name)
-					task.Fn()
+					task.Fn(host)
 				}
 			}
 		}
@@ -227,7 +228,7 @@ func Run(tasks ...*Task) {
 	}
 
 	if runTasks != "" {
-		runTasksForTest(tasks...)
+		runTasksForTest(host, tasks...)
 		return
 	}
 
